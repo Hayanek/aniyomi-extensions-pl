@@ -72,5 +72,65 @@
         "versionId": 1
       }
     ]
+  },
+  {
+    "name": "Aniyomi: desu-online",
+    "pkg": "eu.kanade.tachiyomi.animeextension.pl.desuonline",
+    "apk": "aniyomi-pl.desuonline-v14.8.apk",
+    "lang": "pl",
+    "code": 8,
+    "version": "14.8",
+    "nsfw": 0,
+    "hasReadme": 0,
+    "hasChangelog": 0,
+    "sources": [
+      {
+        "name": "desu-online",
+        "lang": "pl",
+        "id": "5996410160070658951",
+        "baseUrl": "https://desu-online.pl",
+        "versionId": 1
+      }
+    ]
+  },
+  {
+    "name": "Aniyomi: OgladajAnime",
+    "pkg": "eu.kanade.tachiyomi.animeextension.pl.ogladajanime",
+    "apk": "aniyomi-pl.ogladajanime-v14.4.apk",
+    "lang": "pl",
+    "code": 4,
+    "version": "14.4",
+    "nsfw": 1,
+    "hasReadme": 0,
+    "hasChangelog": 0,
+    "sources": [
+      {
+        "name": "OgladajAnime",
+        "lang": "pl",
+        "id": "1174869729090616971",
+        "baseUrl": "https://ogladajanime.pl",
+        "versionId": 1
+      }
+    ]
+  },
+  {
+    "name": "Aniyomi: Wbijam",
+    "pkg": "eu.kanade.tachiyomi.animeextension.pl.wbijam",
+    "apk": "aniyomi-pl.wbijam-v14.4.apk",
+    "lang": "pl",
+    "code": 4,
+    "version": "14.4",
+    "nsfw": 0,
+    "hasReadme": 0,
+    "hasChangelog": 0,
+    "sources": [
+      {
+        "name": "Wbijam",
+        "lang": "pl",
+        "id": "3333993424729096948",
+        "baseUrl": "https://wbijam.pl",
+        "versionId": 1
+      }
+    ]
   }
 ]
