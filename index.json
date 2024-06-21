@@ -1,25 +1,5 @@
 [
   {
-    "name": "Aniyomi: AllAnime",
-    "pkg": "eu.kanade.tachiyomi.animeextension.en.allanime",
-    "apk": "aniyomi-en.allanime-v14.31.apk",
-    "lang": "en",
-    "code": 31,
-    "version": "14.31",
-    "nsfw": 0,
-    "hasReadme": 0,
-    "hasChangelog": 0,
-    "sources": [
-      {
-        "name": "AllAnime",
-        "lang": "en",
-        "id": "4709139914729853090",
-        "baseUrl": "https://api.allanime.day",
-        "versionId": 1
-      }
-    ]
-  },
-  {
     "name": "Aniyomi: desu-online",
     "pkg": "eu.kanade.tachiyomi.animeextension.pl.desuonline",
     "apk": "aniyomi-pl.desuonline-v14.8.apk",
