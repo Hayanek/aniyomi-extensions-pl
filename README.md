@@ -1,33 +1,30 @@
-| Build | Support Server |
-|-------|---------|
-| ![CI](https://github.com/aniyomiorg/aniyomi-extensions/workflows/CI/badge.svg?event=push) | [![Discord](https://img.shields.io/discord/841701076242530374?label=discord&labelColor=7289da&color=2c2f33&style=flat)](https://discord.gg/F32UjdJZrR) |
+| Build |
+|-------|
+| ![CI](https://github.com/aniyomiorg/aniyomi-extensions/workflows/CI/badge.svg?event=push) |
 
-# ![app icon](./.github/readme-images/app-icon.png)Aniyomi Extensions
-Aniyomi is a free and open source manga reader for Android 6.0 and above.
+# Polskie rozszerzenia do Aniyomi
 
-This repository contains the available extension catalogues for the [Aniyomi](https://github.com/aniyomiorg/aniyomi) fork.
+To repozytorium zawiera tylko dostępne roszerzenia do aplikacji [Aniyomi](https://github.com/aniyomiorg/aniyomi).
 
-# Usage
+# Użycie
 
-Extension sources can be downloaded, installed, and uninstalled via the main Aniyomi app. They are installed and uninstalled like regular apps, in `.apk` format.
+Umieść ten link w ustawieniach repozytorium w używanej aplikacji.
 
-## Downloads
+```
+https://raw.githubusercontent.com/Hayanek/aniyomi-extensions-pl/repo/index.min.json
+```
 
-If you prefer to directly download the APK files, they are available via https://aniyomi.org/extensions/ or directly in this GitHub repository in the [`repo` branch](https://github.com/aniyomiorg/aniyomi-extensions/tree/repo/apk).
+## Do pobrania
 
-# Requests
+Jeżeli preferujesz pobranie plików APK, są one dostępne w tym [`repo`](https://github.com/aniyomiorg/aniyomi-extensions/tree/repo/apk).
 
-Source requests here are meant as up-for-grabs for any developer, thus it's impossible to provide a time estimation for any of them. Furthermore, some sites are impossible to do, usually because of various technical reasons.
+# Prośby/Uaktualnienie
+
+Jeśli masz prośbe albo pytania to zapraszam do wiadomości prywatnej na Discordzie ``hayanek``.
 
 # Contributing
 
-Contributions are welcome!
-
-Check out the repo's [issue backlog](https://github.com/aniyomiorg/aniyomi-extensions/issues) for source requests and bug reports.
-
-To get started with development, see [CONTRIBUTING.md](./CONTRIBUTING.md).
-
-It might also be good to read our [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
+Aby rozpocząć tworzenie, zobacz [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 
