@@ -16,7 +16,7 @@ https://raw.githubusercontent.com/Hayanek/aniyomi-extensions-pl/repo/index.min.j
 
 ## Do pobrania
 
-Jeżeli preferujesz pobranie plików APK, są one dostępne w tym [`repo`](https://github.com/aniyomiorg/aniyomi-extensions/tree/repo/apk).
+Jeżeli preferujesz pobranie plików APK, są one dostępne w tym [`repo`](https://github.com/Hayanek/aniyomi-extensions-pl/tree/repo/apk).
 
 # Prośby/Uaktualnienie
 
