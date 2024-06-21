@@ -8,7 +8,7 @@ To repozytorium zawiera tylko dostępne roszerzenia do aplikacji [Aniyomi](https
 
 # Użycie
 
-Umieść ten link w ustawieniach repozytorium w używanej aplikacji.
+Umieść ten link w ustawieniach repozytorium używanej aplikacji.
 
 ```
 https://raw.githubusercontent.com/Hayanek/aniyomi-extensions-pl/repo/index.min.json
