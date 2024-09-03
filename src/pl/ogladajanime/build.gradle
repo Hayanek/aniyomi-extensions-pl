@@ -14,4 +14,6 @@ dependencies {
     implementation(project(':lib:vk-extractor'))
     implementation(project(':lib:googledrive-extractor'))
     implementation(project(':lib:cda-extractor'))
+    implementation(project(':lib:dood-extractor'))
+    implementation(project(':lib:lycoris-extractor'))
 }
