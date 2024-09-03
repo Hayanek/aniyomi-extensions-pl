@@ -22,10 +22,10 @@
   {
     "name": "Aniyomi: OgladajAnime",
     "pkg": "eu.kanade.tachiyomi.animeextension.pl.ogladajanime",
-    "apk": "aniyomi-pl.ogladajanime-v14.4.apk",
+    "apk": "aniyomi-pl.ogladajanime-v14.6.apk",
     "lang": "pl",
-    "code": 4,
-    "version": "14.4",
+    "code": 6,
+    "version": "14.6",
     "nsfw": 1,
     "hasReadme": 0,
     "hasChangelog": 0,
