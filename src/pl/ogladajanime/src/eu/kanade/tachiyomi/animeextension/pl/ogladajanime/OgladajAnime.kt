@@ -173,7 +173,6 @@ class OgladajAnime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
         return POST("$baseUrl/manager.php", apiHeaders, body)
     }
 
-
     private val vkExtractor by lazy { VkExtractor(client, headers) }
     private val cdaExtractor by lazy { CdaPlExtractor(client) }
     private val mp4uploadExtractor by lazy { Mp4uploadExtractor(client) }
