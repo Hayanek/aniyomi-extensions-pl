@@ -20,12 +20,32 @@
     ]
   },
   {
+    "name": "Aniyomi: Docchi",
+    "pkg": "eu.kanade.tachiyomi.animeextension.pl.docchi",
+    "apk": "aniyomi-pl.docchi-v14.2.apk",
+    "lang": "pl",
+    "code": 2,
+    "version": "14.2",
+    "nsfw": 1,
+    "hasReadme": 0,
+    "hasChangelog": 0,
+    "sources": [
+      {
+        "name": "Docchi",
+        "lang": "pl",
+        "id": "594564153449456404",
+        "baseUrl": "https://docchi.pl",
+        "versionId": 1
+      }
+    ]
+  },
+  {
     "name": "Aniyomi: OgladajAnime",
     "pkg": "eu.kanade.tachiyomi.animeextension.pl.ogladajanime",
-    "apk": "aniyomi-pl.ogladajanime-v14.6.apk",
+    "apk": "aniyomi-pl.ogladajanime-v14.7.apk",
     "lang": "pl",
-    "code": 6,
-    "version": "14.6",
+    "code": 7,
+    "version": "14.7",
     "nsfw": 1,
     "hasReadme": 0,
     "hasChangelog": 0,
