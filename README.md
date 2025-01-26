@@ -4,7 +4,7 @@
 
 # Polskie rozszerzenia do Aniyomi
 
-To repozytorium zawiera tylko dostępne roszerzenia do aplikacji [Aniyomi](https://github.com/aniyomiorg/aniyomi).
+To repozytorium zawiera tylko dostępne rozszerzenia do aplikacji [Aniyomi](https://github.com/aniyomiorg/aniyomi).
 
 # Użycie
 
