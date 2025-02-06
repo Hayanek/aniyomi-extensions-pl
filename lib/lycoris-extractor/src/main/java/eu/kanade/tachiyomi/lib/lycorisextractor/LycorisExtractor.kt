@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.lib.lycorisextractor
 import eu.kanade.tachiyomi.animesource.model.Video
 import eu.kanade.tachiyomi.network.GET
 import android.util.Base64
+import android.util.Log
 import eu.kanade.tachiyomi.util.asJsoup
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.Serializable
@@ -61,12 +62,13 @@ class LycorisCafeExtractor(private val client: OkHttpClient) {
             result[key] = episodeData?.let { pattern.find(it)?.groups?.get(1)?.value }
         }
 
-        var linkList: String? =  fetchAndDecodeVideo(client, result["id"].toString(), isSecondary = false).toString()
+        var linkList: String? = fetchAndDecodeVideo(client, result["id"].toString(), isSecondary = false).toString()
 
-        if (linkList.isNullOrEmpty()) {
-            var fhdLink = fetchAndDecodeVideo(client, result["FHD"].toString(), isSecondary = true).toString()
-            var sdLink = fetchAndDecodeVideo(client, result["SD"].toString(), isSecondary = true).toString()
-            var hdLink = fetchAndDecodeVideo(client, result["HD"].toString(), isSecondary = true).toString()
+        val fhdLink = fetchAndDecodeVideo(client, result["FHD"].toString(), isSecondary = true).toString()
+        val sdLink = fetchAndDecodeVideo(client, result["SD"].toString(), isSecondary = true).toString()
+        val hdLink = fetchAndDecodeVideo(client, result["HD"].toString(), isSecondary = true).toString()
+
+        if (linkList.isNullOrBlank() || linkList == "{}") {
             if (fhdLink.isNotEmpty()) {
                 videos.add(Video(fhdLink, "${prefix}lycoris.cafe - 1080p", fhdLink))
             }
@@ -79,9 +81,17 @@ class LycorisCafeExtractor(private val client: OkHttpClient) {
         }else {
             val videoLinks = Json.decodeFromString<VideoLinks>(linkList)
 
-            videoLinks.FHD?.let { videos.add(Video(it, "${prefix}lycoris.cafe - 1080p", it)) }
-            videoLinks.HD?.let { videos.add(Video(it, "${prefix}lycoris.cafe - 720p", it)) }
-            videoLinks.SD?.let { videos.add(Video(it, "${prefix}lycoris.cafe - 480p", it)) }
+            videoLinks.FHD?.takeIf { checkLinks(client, it) }?.let {
+                videos.add(Video(it, "${prefix}lycoris.cafe - 1080p", it))
+            }?: videos.add(Video(fhdLink, "${prefix}lycoris.cafe - 1080p", fhdLink))
+
+            videoLinks.HD?.takeIf { checkLinks(client, it) }?.let {
+                videos.add(Video(it, "${prefix}lycoris.cafe - 720p", it))
+            }?: videos.add(Video(hdLink, "${prefix}lycoris.cafe - 720p", hdLink))
+
+            videoLinks.SD?.takeIf { checkLinks(client, it) }?.let {
+                videos.add(Video(it, "${prefix}lycoris.cafe - 480p", it))
+            }?: videos.add(Video(sdLink, "${prefix}lycoris.cafe - 480p", sdLink))
         }
         return videos
 
@@ -109,16 +119,15 @@ class LycorisCafeExtractor(private val client: OkHttpClient) {
         } catch (e: Exception) {
             null
         }
-
     }
-
 
     private fun fetchAndDecodeVideo(client: OkHttpClient, episodeId: String, isSecondary: Boolean = false): Any? {
             val url: HttpUrl
 
             if (isSecondary) {
                 val convertedText = episodeId.toByteArray(Charset.forName("UTF-8")).toString(Charset.forName("ISO-8859-1"))
-                val finalText = convertedText.toByteArray(Charset.forName("ISO-8859-1")).toString(Charset.forName("UTF-8"))
+                val unicodeEscape = decodePythonEscape(convertedText)
+                val finalText = unicodeEscape.toByteArray(Charsets.ISO_8859_1).toString(Charsets.UTF_8)
 
                 url = GETTHIRDURL.toHttpUrl().newBuilder()
                     ?.addQueryParameter("link", finalText)
@@ -135,6 +144,69 @@ class LycorisCafeExtractor(private val client: OkHttpClient) {
                     return decodeVideoLinks(data)
                 }
     }
+
+    private fun checkLinks(client: OkHttpClient, link: String): Boolean {
+        client.newCall(GET(link)).execute().use { response ->
+            return response.code.toString() == "200"
+        }
+    }
+    //thx deepseek
+    private fun decodePythonEscape(text: String): String {
+        // 1. Obsługa kontynuacji linii (backslash + newline)
+        val withoutLineContinuation = text.replace("\\\n", "")
+
+        // 2. Regex do wykrywania wszystkich sekwencji escape
+        val regex = Regex(
+            """\\U([0-9a-fA-F]{8})|""" +     // \UXXXXXXXX
+                """\\u([0-9a-fA-F]{4})|""" +     // \uXXXX
+                """\\x([0-9a-fA-F]{2})|""" +     // \xHH
+                """\\([0-7]{1,3})|""" +          // \OOO (octal)
+                """\\([btnfr"'$\\\\])"""         // \n, \t, itd.
+        )
+
+        return regex.replace(withoutLineContinuation) { match ->
+            val (u8, u4, x2, octal, simple) = match.destructured
+            when {
+                u8.isNotEmpty() -> handleUnicode8(u8)
+                u4.isNotEmpty() -> handleUnicode4(u4)
+                x2.isNotEmpty() -> handleHex(x2)
+                octal.isNotEmpty() -> handleOctal(octal)
+                simple.isNotEmpty() -> handleSimple(simple)
+                else -> match.value
+            }
+        }
+    }
+
+    private fun handleUnicode8(hex: String): String {
+        val codePoint = hex.toInt(16)
+        return if (codePoint in 0..0x10FFFF) {
+            String(intArrayOf(codePoint), 0, 1)
+        } else {
+            "\\U$hex"
+        }
+    }
+
+    private fun handleUnicode4(hex: String) = hex.toInt(16).toChar().toString()
+    private fun handleHex(hex: String) = hex.toInt(16).toChar().toString()
+
+    private fun handleOctal(octal: String): String {
+        val value = octal.toInt(8)
+        return (value and 0xFF).toChar().toString()
+    }
+
+    private fun handleSimple(c: String): String = when (c) {
+        "b" -> "\u0008"
+        "t" -> "\t"
+        "n" -> "\n"
+        "f" -> "\u000C"
+        "r" -> "\r"
+        "\"" -> "\""
+        "'" -> "'"
+        "$" -> "$"
+        "\\" -> "\\"
+        else -> "\\$c"
+    }
+
     @Serializable
     data class VideoLinks(
         val HD: String? = null,
