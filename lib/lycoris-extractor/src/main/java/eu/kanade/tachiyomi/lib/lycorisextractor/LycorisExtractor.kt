@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.lib.lycorisextractor
 import eu.kanade.tachiyomi.animesource.model.Video
 import eu.kanade.tachiyomi.network.GET
 import android.util.Base64
-import android.util.Log
 import eu.kanade.tachiyomi.util.asJsoup
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.Serializable
@@ -16,9 +15,9 @@ import java.nio.charset.Charset
 
 class LycorisCafeExtractor(private val client: OkHttpClient) {
 
-    private val GETSECONDARYURL = "https://www.lycoris.cafe/api/getSecondaryLink"
+    private val GETSECONDARYURL = "https://www.lycoris.cafe/api/watch/getSecondaryLink"
 
-    private val GETTHIRDURL = "https://www.lycoris.cafe/api/getLink"
+    private val GETLNKURL = "https://www.lycoris.cafe/api/watch/getLink"
 
     private val json: Json by injectLazy()
 
@@ -36,7 +35,7 @@ class LycorisCafeExtractor(private val client: OkHttpClient) {
 
         val scripts = document.select("script")
 
-        val episodeDataPattern = Regex("episodeData\\s*:\\s*(\\{.*?\\}),", RegexOption.DOT_MATCHES_ALL)
+        val episodeDataPattern = Regex("episodeInfo\\s*:\\s*(\\{.*?\\}),", RegexOption.DOT_MATCHES_ALL)
         var episodeData: String? = null
 
         for (script in scripts) {
@@ -67,6 +66,7 @@ class LycorisCafeExtractor(private val client: OkHttpClient) {
         val fhdLink = fetchAndDecodeVideo(client, result["FHD"].toString(), isSecondary = true).toString()
         val sdLink = fetchAndDecodeVideo(client, result["SD"].toString(), isSecondary = true).toString()
         val hdLink = fetchAndDecodeVideo(client, result["HD"].toString(), isSecondary = true).toString()
+
 
         if (linkList.isNullOrBlank() || linkList == "{}") {
             if (fhdLink.isNotEmpty()) {
@@ -129,7 +129,7 @@ class LycorisCafeExtractor(private val client: OkHttpClient) {
                 val unicodeEscape = decodePythonEscape(convertedText)
                 val finalText = unicodeEscape.toByteArray(Charsets.ISO_8859_1).toString(Charsets.UTF_8)
 
-                url = GETTHIRDURL.toHttpUrl().newBuilder()
+                url = GETLNKURL.toHttpUrl().newBuilder()
                     ?.addQueryParameter("link", finalText)
                     ?.build() ?: throw IllegalStateException("Invalid URL")
             } else {
@@ -213,6 +213,7 @@ class LycorisCafeExtractor(private val client: OkHttpClient) {
         val SD: String? = null,
         val FHD: String? = null,
         val Source: String? = null,
+        val preview: String? = null,
         val SourceMKV: String? = null
     )
 

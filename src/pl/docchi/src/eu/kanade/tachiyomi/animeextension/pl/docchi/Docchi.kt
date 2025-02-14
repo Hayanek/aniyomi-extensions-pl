@@ -14,6 +14,7 @@ import eu.kanade.tachiyomi.animesource.online.AnimeHttpSource
 import eu.kanade.tachiyomi.lib.cdaextractor.CdaPlExtractor
 import eu.kanade.tachiyomi.lib.dailymotionextractor.DailymotionExtractor
 import eu.kanade.tachiyomi.lib.doodextractor.DoodExtractor
+import eu.kanade.tachiyomi.lib.luluextractor.LuluExtractor
 import eu.kanade.tachiyomi.lib.lycorisextractor.LycorisCafeExtractor
 import eu.kanade.tachiyomi.lib.mp4uploadextractor.Mp4uploadExtractor
 import eu.kanade.tachiyomi.lib.sibnetextractor.SibnetExtractor
@@ -135,6 +136,7 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
     private val sibnetExtractor by lazy { SibnetExtractor(client) }
     private val doodExtractor by lazy { DoodExtractor(client) }
     private val lycorisExtractor by lazy { LycorisCafeExtractor(client) }
+    private val luluExtractor by lazy { LuluExtractor(client) }
 
     override fun videoListParse(response: Response): List<Video> {
         val videolist: List<VideoList> = json.decodeFromString(response.body.string())
@@ -157,6 +159,7 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
                     "dailymotion",
                     "dood",
                     "lycoris.cafe",
+                    "lulustream",
                 )
             ) {
                 return@mapNotNull null
@@ -192,6 +195,9 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
 
                 serverUrl.contains("lycoris.cafe") -> {
                     lycorisExtractor.getVideosFromUrl(serverUrl, headers, prefix)
+                }
+                serverUrl.contains("luluvdo.com") -> {
+                    luluExtractor.videosFromUrl(serverUrl, prefix)
                 }
 
                 else -> emptyList()

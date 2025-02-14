@@ -16,4 +16,5 @@ dependencies {
     implementation(project(':lib:cda-extractor'))
     implementation(project(':lib:dood-extractor'))
     implementation(project(':lib:lycoris-extractor'))
+    implementation(project(':lib:lulu-extractor'))
 }

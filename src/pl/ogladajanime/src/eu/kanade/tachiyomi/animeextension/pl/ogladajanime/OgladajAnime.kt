@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.animeextension.pl.ogladajanime
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.animesource.ConfigurableAnimeSource
@@ -151,9 +152,11 @@ class OgladajAnime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
     // ============================ Video Links =============================
 
     private fun getPlayerUrl(id: String): String {
+        val token = getToken("0x4AAAAAAA4Lw51lDgwUOsTt")
         val body = FormBody.Builder()
             .add("action", "change_player_url")
             .add("id", id)
+            .add("token", token)
             .build()
         return client.newCall(POST("$baseUrl/manager.php", apiHeaders, body))
             .execute()
@@ -166,9 +169,11 @@ class OgladajAnime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
     }
 
     override fun videoListRequest(episode: SEpisode): Request {
+        val token = getToken("0x4AAAAAAA4K5tG5ky7SURkB")
         val body = FormBody.Builder()
             .add("action", "get_player_list")
             .add("id", episode.url)
+            .add("token", token)
             .build()
         return POST("$baseUrl/manager.php", apiHeaders, body)
     }
@@ -212,6 +217,7 @@ class OgladajAnime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
             if (player.url !in listOf("vk", "cda", "mp4upload", "sibnet", "dailymotion", "dood", "lycoris")) {
                 return@mapNotNull null
             }
+            Log.i("hayan", player.url)
             val url = getPlayerUrl(player.id)
             Pair(url, prefix)
         }
@@ -271,6 +277,16 @@ class OgladajAnime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
     data class ApiResponse(
         val data: String,
     )
+
+    private fun getToken(sitekey: String): String {
+        val tokenUrl = "http://192.168.1.2:5000/turnstile?url=$baseUrl&sitekey=$sitekey"
+        val request = Request.Builder().url(tokenUrl).build()
+        return client.newCall(request).execute().use { response ->
+            response.body.string()
+                .substringAfter("\"result\":\"")
+                .substringBefore("\"")
+        }
+    }
 
     override fun List<Video>.sort(): List<Video> {
         val quality = preferences.getString("preferred_quality", "1080")!!
