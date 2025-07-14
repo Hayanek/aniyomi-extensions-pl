@@ -1,7 +1,7 @@
 ext {
     extName = 'Wbijam'
     extClass = '.Wbijam'
-    extVersionCode = 6
+    extVersionCode = 7
 }
 
 apply from: "$rootDir/common.gradle"
@@ -10,5 +10,4 @@ dependencies {
     implementation(project(':lib:dailymotion-extractor'))
     implementation(project(':lib:mp4upload-extractor'))
     implementation(project(':lib:sibnet-extractor'))
-    implementation(libs.jsunpacker)
 }
