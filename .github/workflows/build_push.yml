@@ -21,7 +21,7 @@ env:
 jobs:
   prepare:
     name: Prepare job
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       individualMatrix: ${{ steps.generate-matrices.outputs.individualMatrix }}
     steps:
@@ -81,7 +81,7 @@ jobs:
   build_individual:
     name: Build individual modules
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix: ${{ fromJSON(needs.prepare.outputs.individualMatrix) }}
     steps:
@@ -125,7 +125,7 @@ jobs:
     name: Publish repo
     needs:
       - build_individual
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Download APK artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
