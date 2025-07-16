@@ -175,15 +175,9 @@ jobs:
           ref: repo
           path: repo
 
-      - name: Check if repo directory exists
-        run: |
-          echo "Checking if repo/ exists..."
-          ls -al
-          ls -al repo || echo "repo/ directory NOT FOUND"
-
       - name: Sync repo
         run: |
-          rsync -a --delete --exclude .git --exclude .gitignore repo/repo/ repo --exclude README.md --exclude repo.json
+          rsync -a --delete --exclude .git --exclude .gitignore repo/ repo --exclude README.md --exclude repo.json
 
       - name: Deploy repo
         uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5 # v9.1.4
