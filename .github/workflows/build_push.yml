@@ -21,19 +21,19 @@ env:
 jobs:
   prepare:
     name: Prepare job
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       individualMatrix: ${{ steps.generate-matrices.outputs.individualMatrix }}
     steps:
       - name: Clone repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: master
           token: ${{ secrets.ANIYOMIORG_BOT_PAT }}
 
       - name: Find lib changes
         id: modified-libs
-        uses: tj-actions/changed-files@90a06d6ba9543371ab4df8eeca0be07ca6054959 #v42
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.5
         with:
           files: lib/
           files_ignore: lib/**.md
@@ -122,21 +122,21 @@ jobs:
     name: Publish repo
     needs:
       - build_individual
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-ubuntu
     steps:
       - name: Download APK artifacts
-        uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           path: ~/apk-artifacts
 
       - name: Set up JDK
-        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           java-version: 17
           distribution: temurin
 
       - name: Checkout master branch
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: master
           path: master
@@ -151,7 +151,7 @@ jobs:
           python ./.github/scripts/create-repo.py
 
       - name: Checkout repo branch
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: Hayanek/aniyomi-extensions-pl
           token: ${{ secrets.ANIYOMIORG_BOT_PAT }}
