@@ -54,9 +54,6 @@ jobs:
         run: |
           ./.github/scripts/bump-versions.py ${{ steps.modified-libs.outputs.all_changed_files }}
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@a494d935f4b56874c4a5a87d19af7afcf3a163d0 # v2
-
       - name: Get number of modules
         run: |
           set -x
@@ -100,7 +97,7 @@ jobs:
         run: echo ${{ secrets.SIGNING_KEY }} | base64 -d > signingkey.jks
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3
+        uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
 
       - name: Build extensions (chunk ${{ matrix.chunk }})
         env:
