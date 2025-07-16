@@ -167,15 +167,6 @@ jobs:
           java -jar ./Inspector.jar "repo/apk" "output.json" "tmp"
           python ./.github/scripts/create-repo.py
 
-      - name: Confirm APKs in final path
-        run: |
-          find repo/apk -name "*.apk" || echo "No APKs found"
-
-      - name: Git status repo
-        run: |
-          git -C repo status
-          git -C repo ls-files repo/apk/*.apk || echo "No APK files tracked"  
-
       - name: Checkout repo branch
         uses: actions/checkout@v4
         with:
@@ -183,6 +174,12 @@ jobs:
           token: ${{ secrets.ANIYOMIORG_BOT_PAT }}
           ref: repo
           path: repo
+
+      - name: Check if repo directory exists
+        run: |
+          echo "Checking if repo/ exists..."
+          ls -al
+          ls -al repo || echo "repo/ directory NOT FOUND"
 
 #      - name: Sync repo
 #        run: |
