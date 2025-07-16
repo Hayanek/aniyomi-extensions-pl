@@ -4,12 +4,11 @@ plugins {
 
 android {
     compileSdk = AndroidConfig.compileSdk
+    namespace = AndroidConfig.coreNamespace
 
     defaultConfig {
         minSdk = AndroidConfig.minSdk
     }
-
-    namespace = "eu.kanade.tachiyomi.animeextension.core"
 
     sourceSets {
         named("main") {
@@ -18,8 +17,9 @@ android {
         }
     }
 
-    buildFeatures {
-        resValues = false
-        shaders = false
+    libraryVariants.all {
+        generateBuildConfigProvider?.configure {
+            enabled = false
+        }
     }
 }

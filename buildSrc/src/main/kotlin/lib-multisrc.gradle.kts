@@ -33,10 +33,14 @@ android {
     }
 }
 
-dependencies {
-    compileOnly(versionCatalogs.named("libs").findBundle("common").get())
-    implementation(project(":utils"))
-}
+versionCatalogs
+    .named("libs")
+    .findBundle("common")
+    .ifPresent { common ->
+        dependencies {
+            compileOnly(common)
+        }
+    }
 
 tasks {
     preBuild {
@@ -47,11 +51,5 @@ tasks {
         lintKotlin {
             dependsOn(formatKotlin)
         }
-    }
-}
-
-tasks.register("printDependentExtensions") {
-    doLast {
-        project.printDependentExtensions()
     }
 }

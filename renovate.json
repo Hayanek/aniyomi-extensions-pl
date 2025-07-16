@@ -1,37 +1,7 @@
 {
-  "labels": ["Dependencies"],
-  "rebaseWhen": "conflicted",
-  "automerge": true,
-  "semanticCommits": "enabled",
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:best-practices"
-  ],
-  "schedule": ["on sunday"],
-  "includePaths": [
-    "buildSrc/gradle/**",
-    "gradle/**",
-    ".github/**"
-  ],
-  "ignoreDeps": [
-    "aniyomiorg/issue-moderator-action",
-    "com.github.mihonapp:injekt"
-  ],
-  "packageRules": [
-    {
-      "matchManagers": ["github-actions"],
-      "groupName": "{{manager}} dependencies"
-    },
-    {
-      "matchManagers": ["gradle"],
-      "enabled": false
-    },
-    {
-      "matchPackageNames": [
-        "com.android.tools.build:gradle",
-        "gradle"
-      ],
-      "draftPR": true,
-      "enabled": true
-    }
+    "config:base",
+    ":dependencyDashboard"
   ]
 }

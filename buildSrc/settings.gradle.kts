@@ -1,3 +1,5 @@
+apply(from = "../repositories.gradle.kts")
+
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
