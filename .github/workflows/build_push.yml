@@ -167,6 +167,17 @@ jobs:
           java -jar ./Inspector.jar "repo/apk" "output.json" "tmp"
           python ./.github/scripts/create-repo.py
 
+      - name: Debug APKs in repo/apk
+        run: |
+          echo "APK files in repo/apk:"
+          ls -l repo/apk
+          find repo/apk -name "*.apk"
+
+      - name: Git status repo
+        run: |
+          git -C repo status
+          git -C repo ls-files repo/apk/*.apk || echo "No APK files tracked"  
+
       - name: Checkout repo branch
         uses: actions/checkout@v4
         with:
