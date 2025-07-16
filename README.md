@@ -1,7 +1,3 @@
-| Build |
-|-------|
-| ![CI](https://github.com/aniyomiorg/aniyomi-extensions/workflows/CI/badge.svg?event=push) |
-
 # Polskie rozszerzenia do Aniyomi
 
 To repozytorium zawiera tylko dostępne rozszerzenia do aplikacji [Aniyomi](https://github.com/aniyomiorg/aniyomi).
