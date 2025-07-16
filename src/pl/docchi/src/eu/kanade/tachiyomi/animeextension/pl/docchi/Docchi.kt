@@ -197,7 +197,7 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
                     lycorisExtractor.getVideosFromUrl(serverUrl, headers, prefix)
                 }
 
-                serverUrl.contains("luluvdo.com") -> {
+                serverUrl.contains("lulu") -> { //placeholder when i search all domain lulustream
                     luluExtractor.videosFromUrl(serverUrl, prefix)
                 }
 

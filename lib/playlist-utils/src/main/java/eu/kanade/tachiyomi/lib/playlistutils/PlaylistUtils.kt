@@ -141,10 +141,10 @@ class PlaylistUtils(private val client: OkHttpClient, private val headers: Heade
          * http://example.com/audio/index.m3u8
          */
         return masterPlaylist.substringAfter(PLAYLIST_SEPARATOR).split(PLAYLIST_SEPARATOR).mapNotNull { stream ->
-            val codec = Regex("""CODECS=\"([^\"]+)\"""").find(stream)?.groupValues?.get(1)
+            val codec = Regex("""CODECS="([^"]+)"""").find(stream)?.groupValues?.get(1)
             if (!codec.isNullOrBlank()) {
                 // FIXME: Why skip mp4a?
-                if (codec.startsWith("mp4a")) return@mapNotNull null
+                if (codec.startsWith("mp4a") && !codec.contains("avc1")) return@mapNotNull null
             }
 
 
@@ -161,11 +161,11 @@ class PlaylistUtils(private val client: OkHttpClient, private val headers: Heade
                     }
                 }
             val bandwidth = Regex("""BANDWIDTH=(\d+)""").find(stream)
-                    ?.groupValues?.get(1)
-                    ?.toLongOrNull()
-                    ?.let { bandwidth ->
-                        formatBytes(bandwidth)
-                    }
+                ?.groupValues?.get(1)
+                ?.toLongOrNull()
+                ?.let { bandwidth ->
+                    formatBytes(bandwidth)
+                }
             val streamName = listOfNotNull(resolution, bandwidth).joinToString(" - ")
                 .takeIf { it.isNotBlank() }
                 ?: "Video"
@@ -173,7 +173,6 @@ class PlaylistUtils(private val client: OkHttpClient, private val headers: Heade
             val videoUrl = stream.substringAfter("\n").substringBefore("\n").let { url ->
                 getAbsoluteUrl(url, playlistUrl, masterUrlBasePath)?.trimEnd()
             } ?: return@mapNotNull null
-
             Video(
                 videoUrl,
                 videoNameGen(streamName),
@@ -339,7 +338,6 @@ class PlaylistUtils(private val client: OkHttpClient, private val headers: Heade
             val bandwidth = videoSrc.attr("bandwidth")
             val res = videoSrc.attr("height") + "p"
             val videoUrl = videoSrc.text()
-
             Video(
                 videoUrl,
                 videoNameGen(res, bandwidth),
