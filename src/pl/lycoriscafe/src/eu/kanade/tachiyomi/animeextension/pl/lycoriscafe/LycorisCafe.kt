@@ -80,7 +80,7 @@ class LycorisCafe : ConfigurableAnimeSource, AnimeHttpSource() {
 
     override fun episodeListRequest(anime: SAnime): Request =
         // GET("$baseApiUrl/v1/episodes/count/${anime.url.substringAfterLast("/")}")
-        TODO()
+        throw UnsupportedOperationException()
     override fun episodeListParse(response: Response): List<SEpisode> {
 //        val episodeList: List<EpisodeList> = json.decodeFromString(response.body.string())
 //        return episodeList.map { episode ->
@@ -90,14 +90,14 @@ class LycorisCafe : ConfigurableAnimeSource, AnimeHttpSource() {
 //                episode_number = episode.anime_episode_number
 //            }
 //        }.reversed()
-        TODO()
+        throw UnsupportedOperationException()
     }
 
     // =========================== Anime Details ============================
 
     override fun animeDetailsRequest(anime: SAnime): Request =
         // GET("$baseApiUrl/v1/series/find/${anime.url.substringAfterLast("/")}")
-        TODO()
+        throw UnsupportedOperationException()
 
     override fun animeDetailsParse(response: Response): SAnime {
 //        val animeDetail: ApiDetail = json.decodeFromString(response.body.string())
@@ -107,7 +107,7 @@ class LycorisCafe : ConfigurableAnimeSource, AnimeHttpSource() {
 //            description = animeDetail.description
 //            genre = animeDetail.genres.joinToString(", ")
 //        }
-        TODO()
+        throw UnsupportedOperationException()
     }
 
     // ============================ Video Links =============================
@@ -117,7 +117,7 @@ class LycorisCafe : ConfigurableAnimeSource, AnimeHttpSource() {
 //            episode.url.substringBeforeLast("/").substringAfterLast("/")
 //        }/${episode.episode_number}",
 //    )
-        TODO()
+        throw UnsupportedOperationException()
 
     // ============================= Utilities ==============================
 
