@@ -169,7 +169,7 @@ class OgladajAnime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
         return episode
     }
 
-    // ============================ Video Links =============================
+    // ============================ Video Links ==============================
 
     override fun videoListRequest(episode: SEpisode): Request {
         return GET("$baseUrl:8443/Player/${episode.url}", apiHeaders)
@@ -241,7 +241,7 @@ class OgladajAnime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
             ),
         ).reversed()
     }
-    // ?
+
     override fun setupPreferenceScreen(screen: PreferenceScreen) {
         val videoQualityPref = ListPreference(screen.context).apply {
             key = "preferred_quality"
