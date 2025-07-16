@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-rsync -a --delete --exclude .git --exclude .gitignore --exclude repo.json ../master/repo/ .
+rsync -a --delete --exclude .git --exclude --exclude repo.json ../master/repo/ .
 git lfs install
 git config --global user.email "Janek-bot@users.noreply.github.com"
 git config --global user.name "Janek-bot"
