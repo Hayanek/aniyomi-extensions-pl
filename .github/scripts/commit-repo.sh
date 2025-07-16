@@ -2,8 +2,8 @@
 set -e
 
 rsync -a --delete --exclude .git --exclude .gitignore ../master/repo/ .
-git config --global user.email "aniyomi-bot@aniyomi.org"
-git config --global user.name "Aniyomi-Ext"
+git config --global user.email "Janek-bot@users.noreply.github.com"
+git config --global user.name "Janek-bot"
 git status
 if [ -n "$(git status --porcelain)" ]; then
     git add .
@@ -11,7 +11,7 @@ if [ -n "$(git status --porcelain)" ]; then
     git push
 
     # Purge cached index on jsDelivr
-    curl https://purge.jsdelivr.net/gh/aniyomiorg/aniyomi-extensions@repo/index.min.json
+    curl https://purge.jsdelivr.net/gh/Hayanek/aniyomi-extensions-pl@repo/index.min.json
 else
     echo "No changes to commit"
 fi
