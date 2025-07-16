@@ -161,17 +161,15 @@ jobs:
       - name: Create repo artifacts
         run: |
           cd master
-          python ./.github/scripts/move-apks.py
+          python ./.github/scripts/move-apks.py ../repo
           INSPECTOR_LINK="$(curl -s "https://api.github.com/repos/aniyomiorg/aniyomi-extensions-inspector/releases/latest" | jq -r '.assets[0].browser_download_url')"
           curl -L "$INSPECTOR_LINK" -o ./Inspector.jar
           java -jar ./Inspector.jar "repo/apk" "output.json" "tmp"
           python ./.github/scripts/create-repo.py
 
-      - name: Debug APKs in repo/apk
+      - name: Confirm APKs in final path
         run: |
-          echo "APK files in repo/apk:"
-          ls -l repo/apk
-          find repo/apk -name "*.apk"
+          find repo/apk -name "*.apk" || echo "No APKs found"
 
       - name: Git status repo
         run: |
