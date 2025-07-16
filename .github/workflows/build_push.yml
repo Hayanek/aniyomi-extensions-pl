@@ -28,7 +28,7 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: master
           token: ${{ secrets.ANIYOMIORG_BOT_PAT }}
 
       # Temporary pause because of leak of tj-actions/changed-files
