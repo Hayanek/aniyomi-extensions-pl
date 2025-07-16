@@ -26,11 +26,11 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okhttp3.Request
 import okhttp3.Response
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import java.text.SimpleDateFormat
 import java.util.Locale
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
 
@@ -145,7 +145,7 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
     override fun videoListParse(response: Response): List<Video> {
         val videolist: List<VideoList> = json.decodeFromString(response.body.string())
         val serverList = videolist.mapNotNull { player ->
-            var sub = player.translator_title.uppercase()
+            val sub = player.translator_title.uppercase()
 
             val prefix = if (player.isInverted) {
                 "[Odwrócone Kolory] $sub - "
