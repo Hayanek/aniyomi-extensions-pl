@@ -167,9 +167,6 @@ jobs:
           java -jar ./Inspector.jar "repo/apk" "output.json" "tmp"
           python ./.github/scripts/create-repo.py
 
-      - name: List APK files in repo
-        run: find repo -name "*.apk"
-
       - name: Checkout repo branch
         uses: actions/checkout@v4
         with:
