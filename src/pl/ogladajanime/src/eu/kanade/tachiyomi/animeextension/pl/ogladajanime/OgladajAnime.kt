@@ -228,6 +228,7 @@ class OgladajAnime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
             statusString.lowercase().contains("emitowane") -> SAnime.ONGOING
             statusString.lowercase().contains("zakończone") -> SAnime.COMPLETED
             statusString.lowercase().contains("zapowiedź") -> SAnime.ON_HIATUS
+            statusString.lowercase().contains("deklaracja") -> SAnime.ON_HIATUS
             else -> SAnime.UNKNOWN
         }
     }

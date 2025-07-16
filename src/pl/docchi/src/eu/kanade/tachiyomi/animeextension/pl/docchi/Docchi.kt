@@ -26,6 +26,8 @@ import kotlinx.serialization.json.Json
 import okhttp3.Request
 import okhttp3.Response
 import uy.kohesive.injekt.injectLazy
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
 
@@ -97,7 +99,7 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
                 name = "${episode.anime_episode_number.toInt()} Odcinek"
                 url = "$baseUrl/production/as/${episode.anime_id}/${episode.anime_episode_number}"
                 episode_number = episode.anime_episode_number
-                // date_upload = episode.created_at.toLong()
+                date_upload = parseDate(episode.created_at)
             }
         }.reversed()
     }
@@ -224,6 +226,15 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
                 { it.quality.contains(server, true) },
             ),
         ).reversed()
+    }
+
+    private fun parseDate(date: String): Long {
+        return try {
+            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            formatter.parse(date)?.time ?: 0L
+        } catch (e: Exception) {
+            0L
+        }
     }
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) {
