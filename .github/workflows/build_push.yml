@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           ref: main
-          token: ${{ secrets.BOT_PAT }}
+          token: ${{ secrets.ANIYOMIORG_BOT_PAT }}
 
       # Temporary pause because of leak of tj-actions/changed-files
       # - name: Find lib changes
