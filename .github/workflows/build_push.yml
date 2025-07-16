@@ -166,6 +166,7 @@ jobs:
           curl -L "$INSPECTOR_LINK" -o ./Inspector.jar
           java -jar ./Inspector.jar "repo/apk" "output.json" "tmp"
           python ./.github/scripts/create-repo.py
+
       - name: List APK files in repo
         run: find repo -name "*.apk"
 
