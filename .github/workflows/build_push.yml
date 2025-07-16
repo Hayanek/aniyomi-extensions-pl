@@ -167,7 +167,7 @@ jobs:
 
       - name: Sync repo
         run: |
-          rsync -a --delete --exclude .git --exclude .gitignore repo/ repo --exclude README.md --exclude repo.json
+          rsync -a --delete --exclude .git --exclude repo/ repo --exclude README.md --exclude repo.json
 
       - name: Deploy repo
         run: |
