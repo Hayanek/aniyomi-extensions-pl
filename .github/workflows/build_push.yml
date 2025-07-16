@@ -171,7 +171,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Hayanek/aniyomi-extensions-pl
-          token: ${{ secrets.ANIYOMIORG_BOT_PAT }}
           ref: repo
           path: repo
 
