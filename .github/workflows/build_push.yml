@@ -166,6 +166,8 @@ jobs:
           curl -L "$INSPECTOR_LINK" -o ./Inspector.jar
           java -jar ./Inspector.jar "repo/apk" "output.json" "tmp"
           python ./.github/scripts/create-repo.py
+      - name: List APK files in repo
+        run: find repo -name "*.apk"
 
       - name: Checkout repo branch
         uses: actions/checkout@v4
@@ -179,11 +181,6 @@ jobs:
         run: |
           rsync -a --delete --exclude .git --exclude .gitignore repo/ repo --exclude README.md --exclude repo.json
           
-      - name: Debug repo status
-        run: |
-          cd repo
-          git status
-          git diff --stat
 
       - name: Deploy repo
         uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5 # v9.1.4
