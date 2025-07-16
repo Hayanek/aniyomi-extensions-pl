@@ -162,7 +162,7 @@ jobs:
         with:
           repository: Hayanek/aniyomi-extensions-pl
           token: ${{ secrets.ANIYOMIORG_BOT_PAT }}
-          ref: master
+          ref: repo
           path: repo
 
       - name: Sync repo
