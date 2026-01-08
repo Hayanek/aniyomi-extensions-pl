@@ -16,4 +16,4 @@ Jeżeli preferujesz pobranie plików APK, są one dostępne w tym [`repo`](https
 
 # Prośby/Uaktualnienie
 
-Jeśli masz prośbe albo pytania to zapraszam do wiadomości prywatnej na Discordzie ``hayanek``.
+Jeśli masz prośbe albo pytania to zapraszam na serwer [`Discord`](https://discord.gg/Xn74CcJ4bk).
