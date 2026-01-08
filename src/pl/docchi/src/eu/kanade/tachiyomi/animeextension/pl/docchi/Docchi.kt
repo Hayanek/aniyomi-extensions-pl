@@ -19,9 +19,12 @@ import eu.kanade.tachiyomi.lib.luluextractor.LuluExtractor
 import eu.kanade.tachiyomi.lib.lycorisextractor.LycorisCafeExtractor
 import eu.kanade.tachiyomi.lib.mp4uploadextractor.Mp4uploadExtractor
 import eu.kanade.tachiyomi.lib.sibnetextractor.SibnetExtractor
+import eu.kanade.tachiyomi.lib.streamupextractor.StreamupExtractor
 import eu.kanade.tachiyomi.lib.vkextractor.VkExtractor
 import eu.kanade.tachiyomi.network.GET
+import eu.kanade.tachiyomi.util.asJsoup
 import eu.kanade.tachiyomi.util.parallelCatchingFlatMapBlocking
+import eu.kanade.tachiyomi.util.parseAs
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okhttp3.Request
@@ -56,12 +59,12 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
         GET("$baseApiUrl/v1/series/list?limit=20&before=${(page - 1) * 20}")
 
     override fun popularAnimeParse(response: Response): AnimesPage {
-        val animeArray: List<ApiList> = json.decodeFromString(response.body.string())
+        val animeArray: List<ApiList> = response.body.string().parseAs()
         val entries = animeArray.map { animeDetail ->
             SAnime.create().apply {
                 title = animeDetail.title
-                url = "$baseUrl/production/as/${animeDetail.slug}"
                 thumbnail_url = animeDetail.cover
+                setUrlWithoutDomain("$baseUrl${if (animeDetail.adult_content) "/hentai/" else "/production/as/"}${animeDetail.slug}")
             }
         }
         val hasNextPage = animeArray.isNotEmpty()
@@ -82,12 +85,12 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
         GET("$baseApiUrl/v1/series/related/$query")
 
     override fun searchAnimeParse(response: Response): AnimesPage {
-        val animeArray: List<ApiSearch> = json.decodeFromString(response.body.string())
+        val animeArray: List<ApiSearch> = response.body.string().parseAs()
         val entries = animeArray.map { animeDetail ->
             SAnime.create().apply {
                 title = animeDetail.title
-                url = "$baseUrl/production/as/${animeDetail.slug}"
                 thumbnail_url = animeDetail.cover
+                setUrlWithoutDomain("$baseUrl${if (animeDetail.adult_content) "/hentai/" else "/production/as/"}${animeDetail.slug}")
             }
         }
         return AnimesPage(entries, false)
@@ -98,7 +101,7 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
         GET("$baseApiUrl/v1/episodes/count/${anime.url.substringAfterLast("/")}")
 
     override fun episodeListParse(response: Response): List<SEpisode> {
-        val episodeList: List<EpisodeList> = json.decodeFromString(response.body.string())
+        val episodeList: List<EpisodeList> = response.body.string().parseAs()
         return episodeList.map { episode ->
             SEpisode.create().apply {
                 name = "${episode.anime_episode_number.toInt()} Odcinek"
@@ -111,15 +114,20 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
 
     // =========================== Anime Details ============================
 
-    override fun animeDetailsRequest(anime: SAnime): Request =
-        GET("$baseApiUrl/v1/series/find/${anime.url.substringAfterLast("/")}")
-
+    // animeDetailsRequest not recomended because i want WebView from site not from api.
     override fun animeDetailsParse(response: Response): SAnime {
-        val animeDetail: ApiDetail = json.decodeFromString(response.body.string())
+        val documentDocchi = client.newCall(
+            GET("$baseApiUrl/v1/series/find/${response.asJsoup().location().substringAfterLast("/")}"),
+        ).execute()
+
+        val animeDetail = documentDocchi.body.string().parseAs<ApiDetail>()
+        val myanimeListDetail = myanimelistApi(animeDetail.mal_id)
 
         return SAnime.create().apply {
             title = animeDetail.title
             description = animeDetail.description
+            author = myanimeListDetail.data.studios.first().name
+            status = parseStatus(myanimeListDetail.data.status)
             genre = animeDetail.genres.joinToString(", ")
         }
     }
@@ -141,9 +149,10 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
     private val lycorisExtractor by lazy { LycorisCafeExtractor(client) }
     private val luluExtractor by lazy { LuluExtractor(client, headers) }
     private val googledriveExtractor by lazy { GoogleDriveExtractor(client, headers) }
+    private val streamupExtractor by lazy { StreamupExtractor(client) }
 
     override fun videoListParse(response: Response): List<Video> {
-        val videolist: List<VideoList> = json.decodeFromString(response.body.string())
+        val videolist: List<VideoList> = response.body.string().parseAs()
         val serverList = videolist.mapNotNull { player ->
             val sub = player.translator_title.uppercase()
 
@@ -166,6 +175,7 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
                     "lulustream",
                     "gdrive",
                     "google drive",
+                    "streamup",
                 )
             ) {
                 return@mapNotNull null
@@ -214,6 +224,10 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
                     googledriveExtractor.videosFromUrl(id, "${prefix}Gdrive -")
                 }
 
+                serverUrl.contains("strmup.to") -> {
+                    streamupExtractor.getVideosFromUrl(serverUrl, headers, prefix)
+                }
+
                 else -> emptyList()
             }
         }
@@ -226,19 +240,30 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
         val server = preferences.getString("preferred_server", "cda.pl")!!
 
         return this.sortedWith(
-            compareBy(
-                { it.quality.contains(quality) },
-                { it.quality.contains(server, true) },
-            ),
-        ).reversed()
+            compareBy<Video> { it.quality.contains("AI", true) }
+                .thenByDescending { it.quality.contains(quality) }
+                .thenByDescending { it.quality.contains(server, true) },
+        )
     }
-
+    private fun myanimelistApi(id: Int): MyAnimeListResponse {
+        val document = client.newCall(
+            GET("https://api.jikan.moe/v4/anime/$id"),
+        ).execute()
+        return document.body.string().parseAs<MyAnimeListResponse>()
+    }
     private fun parseDate(date: String): Long {
         return try {
             val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
             formatter.parse(date)?.time ?: 0L
         } catch (e: Exception) {
             0L
+        }
+    }
+    private fun parseStatus(statusString: String): Int {
+        return when {
+            statusString.lowercase().contains("currently airing") -> SAnime.ONGOING
+            statusString.lowercase().contains("finished airing") -> SAnime.COMPLETED
+            else -> SAnime.UNKNOWN
         }
     }
 
@@ -279,9 +304,26 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
     }
 
     @Serializable
+    data class MyAnimeListResponse(
+        val data: MyAnimeListApi,
+    )
+
+    @Serializable
+    data class MyAnimeListApi(
+        val mal_id: Int,
+        val status: String,
+        val studios: List<StudiosMAL>,
+    )
+
+    @Serializable
+    data class StudiosMAL(
+        val name: String,
+    )
+
+    @Serializable
     data class ApiList(
         val mal_id: Int,
-        val adult_content: String,
+        val adult_content: Boolean,
         val title: String,
         val title_en: String,
         val slug: String,
@@ -303,7 +345,7 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
         val title_en: String,
         val slug: String,
         val cover: String,
-        val adult_content: String,
+        val adult_content: Boolean,
         val series_type: String,
         val episodes: Int?,
         val season: String,
@@ -315,7 +357,7 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
         val id: Int,
         val mal_id: Int,
         val ani_id: Int?,
-        val adult_content: String,
+        val adult_content: Boolean,
         val title: String,
         val title_en: String,
         val slug: String,
@@ -338,7 +380,7 @@ class Docchi : ConfigurableAnimeSource, AnimeHttpSource() {
     data class EpisodeList(
         val anime_id: String,
         val anime_episode_number: Float,
-        val isInverted: String,
+        val isInverted: Boolean,
         val created_at: String,
         val bg: String?,
     )
